@@ -20,7 +20,7 @@ export default function EquipePage() {
     ]
     return (
         <div className="px-4 py-4">
-            <h1 className="text-2xl font-bold mb-4">L&apos;administration</h1>
+            <h1 className="text-2xl font-bold mb-4">Direction</h1>
             <div className="grid grid-cols-4 gap-4">
                 {admins.map((admin) => (
                     <Card key={admin}>

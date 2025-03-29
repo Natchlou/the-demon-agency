@@ -3,6 +3,7 @@
 import {
   ArrowUpCircleIcon,
   ClipboardListIcon,
+  ClockIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
   SearchIcon,
@@ -41,6 +42,11 @@ const data = {
       title: "Équipe",
       url: "/equipe",
       icon: UsersIcon,
+    },
+    {
+      title: "Horaire",
+      url: "/agence",
+      icon: ClockIcon,
     },
   ],
   navSecondary: [
