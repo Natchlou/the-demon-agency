@@ -10,6 +10,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { ModeToggle } from "./toggle-mode"
 
 export function NavMain({
     items,
@@ -32,14 +33,7 @@ export function NavMain({
                             <PlusCircleIcon />
                             <span>Quick Create</span>
                         </SidebarMenuButton>
-                        <Button
-                            size="icon"
-                            className="h-9 w-9 shrink-0 group-data-[collapsible=icon]:opacity-0"
-                            variant="outline"
-                        >
-                            <MailIcon />
-                            <span className="sr-only">Inbox</span>
-                        </Button>
+                        <ModeToggle />
                     </SidebarMenuItem>
                 </SidebarMenu>
                 <SidebarMenu>

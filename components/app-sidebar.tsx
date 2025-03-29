@@ -41,27 +41,27 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
+      title: "Tableau de bord",
       url: "#",
       icon: LayoutDashboardIcon,
     },
     {
-      title: "Lifecycle",
+      title: "Cycle de vie",
       url: "#",
       icon: ListIcon,
     },
     {
-      title: "Analytics",
+      title: "Analytiques",
       url: "#",
       icon: BarChartIcon,
     },
     {
-      title: "Projects",
+      title: "Projets",
       url: "#",
       icon: FolderIcon,
     },
     {
-      title: "Team",
+      title: "Équipe",
       url: "#",
       icon: UsersIcon,
     },
@@ -74,41 +74,41 @@ const data = {
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "Propositions actives",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "Archivées",
           url: "#",
         },
       ],
     },
     {
-      title: "Proposal",
+      title: "Proposition",
       icon: FileTextIcon,
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "Propositions actives",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "Archivées",
           url: "#",
         },
       ],
     },
     {
-      title: "Prompts",
+      title: "Prompt",
       icon: FileCodeIcon,
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "Propositions actives",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "Archivées",
           url: "#",
         },
       ],
@@ -116,34 +116,34 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Settings",
+      title: "Paramètres",
       url: "#",
       icon: SettingsIcon,
     },
     {
-      title: "Get Help",
+      title: "Obtenir de l'aide",
       url: "#",
       icon: HelpCircleIcon,
     },
     {
-      title: "Search",
+      title: "Rechercher",
       url: "#",
       icon: SearchIcon,
     },
   ],
   documents: [
     {
-      name: "Data Library",
+      name: "Bibliothèque de données",
       url: "#",
       icon: DatabaseIcon,
     },
     {
-      name: "Reports",
+      name: "Rapports",
       url: "#",
       icon: ClipboardListIcon,
     },
     {
-      name: "Word Assistant",
+      name: "Assistant de mots",
       url: "#",
       icon: FileIcon,
     },
@@ -162,7 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <ArrowUpCircleIcon className="h-5 w-5" />
-                <span className="text-base font-semibold">The Demon Agency</span>
+                <span className="text-base font-semibold">L'Agence Démon</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
