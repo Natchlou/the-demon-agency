@@ -1,20 +1,34 @@
-"use client"
+'use client'
+
 import AddMatchModal from "@/components/add-match";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
 
+type Match = {
+  id: string;
+  creator: string;
+  opponent: string;
+  date: string;
+  heure: string;
+  boost: boolean;
+  number: string;
+  agency: string;
+  description: string;
+};
+
 export default function Home() {
   const supabase = createClient();
-  const [match_officiel, setMatchOfficiel] = useState<null | any[]>(null);
+  const [matchOfficiel, setMatchOfficiel] = useState<Match[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMatchOfficiel = async () => {
-      let { data, error } = await supabase
+      const { data, error } = await supabase
         .from('match_officiel')
         .select('*');
+
       if (error) {
         setError(error.message);
       } else {
@@ -22,7 +36,11 @@ export default function Home() {
       }
     };
     fetchMatchOfficiel();
-  }, []);
+  }, [supabase]);  // Ajoutez `supabase` aux dépendances
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="px-40 space-y-3">
@@ -41,8 +59,8 @@ export default function Home() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {match_officiel && match_officiel.map((match: any, index: number) => (
-            <TableRow key={index}>
+          {matchOfficiel?.map((match) => (
+            <TableRow key={match.id}>
               <TableCell className="font-medium">{match.creator}</TableCell>
               <TableCell>{match.opponent}</TableCell>
               <TableCell>
@@ -52,9 +70,7 @@ export default function Home() {
                   year: 'numeric',
                 })}
               </TableCell>
-              <TableCell>
-                {match.heure}
-              </TableCell>
+              <TableCell>{match.heure}</TableCell>
               <TableCell><Badge>{match.boost ? 'Oui' : 'Non'}</Badge></TableCell>
               <TableCell>{match.number} K</TableCell>
               <TableCell>{match.agency}</TableCell>

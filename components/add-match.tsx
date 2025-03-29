@@ -7,43 +7,65 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { createClient } from "@/utils/supabase/client"; // On suppose que le client est exporté de cette manière
+import { PostgrestError } from '@supabase/supabase-js';
 
 export default function AddMatchModal() {
     const supabase = createClient();
-    const [creator, setCreator] = useState('');
-    const [opponent, setOpponent] = useState('');
-    const [date, setDate] = useState('');
-    const [heure, setHeure] = useState('');
-    const [boost, setBoost] = useState(false);
-    const [number, setNumber] = useState('');
-    const [agency, setAgency] = useState('');
-    const [description, setDescription] = useState('');
+    const [formState, setFormState] = useState({
+        creator: '',
+        opponent: '',
+        date: '',
+        heure: '',
+        boost: false,
+        number: '',
+        agency: '',
+        description: ''
+    });
     const [loading, setLoading] = useState(false);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormState({
+            ...formState,
+            [e.target.id]: e.target.value
+        });
+    };
+
+    const handleBoostChange = (checked: boolean) => {
+        setFormState({
+            ...formState,
+            boost: checked
+        });
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
         try {
-            const { error } = await supabase
+            const { error }: { error: PostgrestError | null } = await supabase
                 .from('match_officiel')
                 .insert([{
-                    creator,
-                    opponent,
-                    date,
-                    heure,
-                    boost,
-                    number,
-                    agency,
-                    description
+                    creator: formState.creator,
+                    opponent: formState.opponent,
+                    date: formState.date,
+                    heure: formState.heure,
+                    boost: formState.boost,
+                    number: formState.number,
+                    agency: formState.agency,
+                    description: formState.description
                 }]);
 
             if (error) throw error;
 
             alert('Match ajouté avec succès!');
-        } catch (error: any) {
-            console.error(error);
-            alert(error.message || 'Erreur lors de l\'ajout du match.');
+        } catch (error: PostgrestError | unknown) {
+            if (error instanceof PostgrestError) {
+                console.error(error.message);
+                alert(error.message || 'Erreur lors de l\'ajout du match.');
+            } else {
+                console.error(error);
+                alert('Erreur inconnue lors de l\'ajout du match.');
+            }
         } finally {
             setLoading(false);
         }
@@ -68,8 +90,8 @@ export default function AddMatchModal() {
                         <Input
                             type="text"
                             id="creator"
-                            value={creator}
-                            onChange={(e) => setCreator(e.target.value)}
+                            value={formState.creator}
+                            onChange={handleChange}
                             required
                         />
                     </div>
@@ -78,8 +100,8 @@ export default function AddMatchModal() {
                         <Input
                             type="text"
                             id="opponent"
-                            value={opponent}
-                            onChange={(e) => setOpponent(e.target.value)}
+                            value={formState.opponent}
+                            onChange={handleChange}
                             required
                         />
                     </div>
@@ -88,8 +110,8 @@ export default function AddMatchModal() {
                         <Input
                             type="date"
                             id="date"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
+                            value={formState.date}
+                            onChange={handleChange}
                             required
                         />
                     </div>
@@ -98,8 +120,8 @@ export default function AddMatchModal() {
                         <Input
                             type="time"
                             id="heure"
-                            value={heure}
-                            onChange={(e) => setHeure(e.target.value)}
+                            value={formState.heure}
+                            onChange={handleChange}
                             required
                         />
                     </div>
@@ -107,8 +129,8 @@ export default function AddMatchModal() {
                         <Label htmlFor="boost">Boost</Label>
                         <Checkbox
                             id="boost"
-                            checked={boost}
-                            onCheckedChange={(checked) => setBoost(checked)}
+                            checked={formState.boost}
+                            onCheckedChange={handleBoostChange}
                             className="h-4 w-4 text-blue-500"
                         />
                     </div>
@@ -117,8 +139,8 @@ export default function AddMatchModal() {
                         <Input
                             type="text"
                             id="number"
-                            value={number}
-                            onChange={(e) => setNumber(e.target.value)}
+                            value={formState.number}
+                            onChange={handleChange}
                         />
                     </div>
                     <div>
@@ -126,16 +148,16 @@ export default function AddMatchModal() {
                         <Input
                             type="text"
                             id="agency"
-                            value={agency}
-                            onChange={(e) => setAgency(e.target.value)}
+                            value={formState.agency}
+                            onChange={handleChange}
                         />
                     </div>
                     <div>
                         <Label htmlFor="description">Description</Label>
                         <textarea
                             id="description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            value={formState.description}
+                            onChange={handleChange}
                             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             rows={4}
                         />
