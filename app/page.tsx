@@ -1,6 +1,7 @@
 "use client"
 
 import AddMatchModal from "@/components/add-match";
+import { SiteHeader } from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { createClient } from "@/utils/supabase/client";
@@ -43,42 +44,49 @@ export default function Home() {
   }
 
   return (
-    <div className="px-4 space-y-3">
-      <AddMatchModal />
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Créateur</TableHead>
-            <TableHead>Adversaire</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Heure</TableHead>
-            <TableHead>Boost</TableHead>
-            <TableHead>Nombre</TableHead>
-            <TableHead>Agence</TableHead>
-            <TableHead>Description</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {matchOfficiel?.map((match) => (
-            <TableRow key={match.id}>
-              <TableCell className="font-medium">{match.creator}</TableCell>
-              <TableCell>{match.opponent}</TableCell>
-              <TableCell>
-                {new Date(match.date).toLocaleDateString('fr-FR', {
-                  day: '2-digit',
-                  month: 'long',
-                  year: 'numeric',
-                })}
-              </TableCell>
-              <TableCell>{match.heure}</TableCell>
-              <TableCell><Badge>{match.boost ? 'Oui' : 'Non'}</Badge></TableCell>
-              <TableCell>{match.number} K</TableCell>
-              <TableCell>{match.agency}</TableCell>
-              <TableCell>{match.description}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    <>
+      <SiteHeader title={'Match officiel de l\'agence'} />
+      <div className="flex flex-1 flex-col">
+        <div className="@container/main flex flex-1 flex-col gap-2">
+          <div className="p-4 space-y-3">
+            <AddMatchModal />
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Créateur</TableHead>
+                  <TableHead>Adversaire</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Heure</TableHead>
+                  <TableHead>Boost</TableHead>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead>Agence</TableHead>
+                  <TableHead>Description</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {matchOfficiel?.map((match) => (
+                  <TableRow key={match.id}>
+                    <TableCell className="font-medium">{match.creator}</TableCell>
+                    <TableCell>{match.opponent}</TableCell>
+                    <TableCell>
+                      {new Date(match.date).toLocaleDateString('fr-FR', {
+                        day: '2-digit',
+                        month: 'long',
+                        year: 'numeric',
+                      })}
+                    </TableCell>
+                    <TableCell>{match.heure}</TableCell>
+                    <TableCell><Badge>{match.boost ? 'Oui' : 'Non'}</Badge></TableCell>
+                    <TableCell>{match.number} K</TableCell>
+                    <TableCell>{match.agency}</TableCell>
+                    <TableCell>{match.description}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

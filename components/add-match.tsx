@@ -84,7 +84,7 @@ export default function AddMatchModal() {
                     </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="py-4 space-y-4">
                     <div>
                         <Label htmlFor="creator">Créateur</Label>
                         <Input

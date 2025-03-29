@@ -40,12 +40,7 @@ export default function RootLayout({
           <SidebarProvider>
             <AppSidebar variant="inset" />
             <SidebarInset>
-              <SiteHeader title={String(title)} />
-              <div className="flex flex-1 flex-col">
-                <div className="@container/main flex flex-1 flex-col gap-2">
-                  {children}
-                </div>
-              </div>
+              {children}
             </SidebarInset>
           </SidebarProvider>
         </ThemeProvider>
