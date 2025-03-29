@@ -26,7 +26,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const title = metadata?.title || "The Demon Agency";
-  console.log(metadata, title)
   return (
     <html lang="fr" suppressHydrationWarning>
       <body

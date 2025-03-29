@@ -64,20 +64,10 @@ const data = {
   ],
   documents: [
     {
-      name: "Bibliothèque de données",
-      url: "#",
-      icon: DatabaseIcon,
-    },
-    {
-      name: "Rapports",
+      name: "Planning",
       url: "#",
       icon: ClipboardListIcon,
-    },
-    {
-      name: "Assistant de mots",
-      url: "#",
-      icon: FileIcon,
-    },
+    }
   ],
 }
 
