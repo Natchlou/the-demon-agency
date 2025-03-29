@@ -3,8 +3,6 @@
 import {
   ArrowUpCircleIcon,
   ClipboardListIcon,
-  DatabaseIcon,
-  FileIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
   SearchIcon,
