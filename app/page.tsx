@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import AddMatchModal from "@/components/add-match";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +43,7 @@ export default function Home() {
   }
 
   return (
-    <div className="px-40 space-y-3">
+    <div className="px-4 space-y-3">
       <AddMatchModal />
       <Table>
         <TableHeader>

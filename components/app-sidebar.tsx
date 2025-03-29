@@ -42,76 +42,13 @@ const data = {
   navMain: [
     {
       title: "Tableau de bord",
-      url: "#",
+      url: "/",
       icon: LayoutDashboardIcon,
     },
     {
-      title: "Cycle de vie",
-      url: "#",
-      icon: ListIcon,
-    },
-    {
-      title: "Analytiques",
-      url: "#",
-      icon: BarChartIcon,
-    },
-    {
-      title: "Projets",
-      url: "#",
-      icon: FolderIcon,
-    },
-    {
       title: "Équipe",
-      url: "#",
+      url: "/equipe",
       icon: UsersIcon,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: CameraIcon,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Propositions actives",
-          url: "#",
-        },
-        {
-          title: "Archivées",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposition",
-      icon: FileTextIcon,
-      url: "#",
-      items: [
-        {
-          title: "Propositions actives",
-          url: "#",
-        },
-        {
-          title: "Archivées",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompt",
-      icon: FileCodeIcon,
-      url: "#",
-      items: [
-        {
-          title: "Propositions actives",
-          url: "#",
-        },
-        {
-          title: "Archivées",
-          url: "#",
-        },
-      ],
     },
   ],
   navSecondary: [
