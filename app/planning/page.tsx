@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react';
 
 type Match = {
     id: string;
@@ -21,6 +22,7 @@ export default function PlanningPage() {
     const supabase = createClient();
     const [matchOfficiel, setMatchOfficiel] = useState<Match[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const { data: session } = useSession();
 
     useEffect(() => {
         const fetchMatchOfficiel = async () => {
@@ -65,7 +67,9 @@ export default function PlanningPage() {
                                     <CardContent>
                                         <p><strong>Nombre :</strong> {match.number} K</p>
                                         <p><strong>Boost :</strong> {match.boost ? "Oui" : "Non"}</p>
-                                        {/* <p><strong>Agence :</strong> {match.agency}</p> */}
+                                        {session?.user?.role === 'admin' && (
+                                            <p><strong>Agence :</strong> {match.agency}</p>
+                                        )}
                                         <p><strong>Description :</strong> {match.description}</p>
                                     </CardContent>
                                 </Card>
