@@ -12,12 +12,14 @@ export default function EquipePage() {
         "Chouchoune",
         "Olivier(oliver)",
         "Baloo",
-        "Nico"
+        "Nico",
+        "TaZzZdubai",
+        "Thomas"
     ]
     const agents = [
         "Fafa",
         "agent hydra hikaru",
-        "TaZzZdubai"
+        "Fabou"
     ]
     return (
         <>

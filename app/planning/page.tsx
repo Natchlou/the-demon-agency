@@ -28,6 +28,7 @@ export default function PlanningPage() {
                 .from('match_officiel')
                 .select('*')
                 .gt('date', new Date().toISOString())
+                .order('date', { ascending: true })
                 .limit(4);
 
             if (error) {
@@ -37,7 +38,7 @@ export default function PlanningPage() {
             }
         };
         fetchMatchOfficiel();
-    }, []);
+    }, [supabase]);
 
     return (
         <>
@@ -48,7 +49,11 @@ export default function PlanningPage() {
 
                     {matchOfficiel.length > 0 ? (
                         matchOfficiel.map((match) => {
-                            const formattedDate = new Date(match.date).toLocaleDateString('fr-FR');
+                            const formattedDate = new Date(match.date).toLocaleDateString('fr-FR', {
+                                day: '2-digit',
+                                month: 'long',
+                                year: 'numeric'
+                            });
                             const formattedTime = match.heure.slice(0, 2) + "h" + match.heure.slice(3, 5);
 
                             return (
@@ -60,7 +65,7 @@ export default function PlanningPage() {
                                     <CardContent>
                                         <p><strong>Nombre :</strong> {match.number} K</p>
                                         <p><strong>Boost :</strong> {match.boost ? "Oui" : "Non"}</p>
-                                        <p><strong>Agence :</strong> {match.agency}</p>
+                                        {/* <p><strong>Agence :</strong> {match.agency}</p> */}
                                         <p><strong>Description :</strong> {match.description}</p>
                                     </CardContent>
                                 </Card>
