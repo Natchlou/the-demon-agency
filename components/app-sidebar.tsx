@@ -69,7 +69,7 @@ const data = {
   documents: [
     {
       name: "Planning",
-      url: "#",
+      url: "/planning",
       icon: ClipboardListIcon,
     }
   ],
