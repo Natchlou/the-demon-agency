@@ -1,15 +1,19 @@
-import { createClient } from '@supabase/supabase-js'
-import { Auth } from '@supabase/auth-ui-react'
-import { ThemeSupa } from '@supabase/auth-ui-shared'
+import { Input } from '@/components/ui/input'
+import { login, signup } from './actions'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
-)
-
-const App = () => (
-    <Auth
-        supabaseClient={supabase}
-        appearance={{ theme: ThemeSupa }}
-    />
-)
+export default function LoginPage() {
+    return (
+        <div className='container m-auto mx-auto'>
+            <form>
+                <Label htmlFor="email">Your email address</Label>
+                <Input id="email" name="email" type="email" required />
+                <Label htmlFor="password">Your password</Label>
+                <Input id="password" name="password" type="password" required />
+                <Button formAction={login}>Log in</Button>
+                <Button formAction={signup}>Sign up</Button>
+            </form>
+        </div>
+    )
+}
