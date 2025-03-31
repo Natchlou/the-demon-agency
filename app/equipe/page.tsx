@@ -28,7 +28,7 @@ export default function EquipePage() {
                 <div className="@container/main flex flex-1 flex-col gap-2">
                     <div className="p-4">
                         <h1 className="text-2xl font-bold mb-4">Direction</h1>
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4">
                             {admins.map((admin) => (
                                 <Card key={admin}>
                                     <CardHeader>
@@ -39,7 +39,7 @@ export default function EquipePage() {
                         </div>
                         <Separator className="my-4" />
                         <h1 className="text-2xl font-bold mb-4">Managers</h1>
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4">
                             {managers.map((manager) => (
                                 <Card key={manager}>
                                     <CardHeader>
@@ -50,7 +50,7 @@ export default function EquipePage() {
                         </div>
                         <Separator className="my-4" />
                         <h1 className="text-2xl font-bold mb-4">Agents</h1>
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4">
                             {agents.map((agent) => (
                                 <Card key={agent}>
                                     <CardHeader>

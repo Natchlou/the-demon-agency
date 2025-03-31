@@ -27,6 +27,7 @@ import {
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 type SupabaseUser = {
   id: string;
@@ -86,7 +87,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
               <Link href="/">
-                <ArrowUpCircleIcon className="h-5 w-5" />
+                <Image src={'/favicon.ico'} className="rounded" alt='Logo agence' width={'24'} height={'24'} />
                 <span className="text-base font-semibold">The Demon Agency</span>
               </Link>
             </SidebarMenuButton>
@@ -96,6 +97,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavDocuments items={data.documents} />
+        <Image src={'/favicon.ico'} className="rounded-4xl" alt='Logo agence' width={'256'} height={'256'} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

@@ -41,7 +41,16 @@ export default function Dashboard() {
                 setIsAdmin(roleData[0].role === "admin");
 
                 // Récupérer les matchs
-                const { data: matches, error: matchError } = await supabase.from("match_officiel").select("*");
+                const now = new Date();
+                const firstDay = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString();
+                const lastDay = new Date(now.getFullYear(), now.getMonth() + 2, 1).toISOString();
+                // Récupérer les matchs
+                const { data: matches, error: matchError } = await supabase
+                    .from("match_officiel")
+                    .select("*")
+                    .gte("date", firstDay)
+                    .lt("date", lastDay)
+                    .order("date", { ascending: true });
                 if (matchError) throw new Error(matchError.message);
 
                 setMatchOfficiel(matches || []);

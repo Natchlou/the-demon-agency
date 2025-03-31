@@ -58,8 +58,17 @@ export default function PlanningPage() {
                 // Vérifier si l'utilisateur est admin (ajuste selon ton système d'authentification)
                 setIsAdmin(roleData[0].role === "admin");
 
+                const now = new Date();
+                const firstDay = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString();
+                const lastDay = new Date(now.getFullYear(), now.getMonth() + 2, 1).toISOString();
                 // Récupérer les matchs
-                const { data: matches, error: matchError } = await supabase.from("match_officiel").select("*");
+                const { data: matches, error: matchError } = await supabase
+                    .from("match_officiel")
+                    .select("*")
+                    .gte("date", firstDay)
+                    .lt("date", lastDay)
+                    .order("date", { ascending: true })
+                    .limit(4);
                 if (matchError) throw new Error(matchError.message);
 
                 setMatchOfficiel(matches || []);
@@ -75,7 +84,7 @@ export default function PlanningPage() {
 
     if (loading) return <div>Chargement...</div>;
     if (error) return <div>Erreur : {error}</div>;
-    
+
     return (
         <>
             <SiteHeader title="Planning des prochains mois" />
