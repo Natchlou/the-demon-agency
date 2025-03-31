@@ -6,6 +6,18 @@ import { SiteHeader } from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { createClient } from "@/utils/supabase/client";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+const months = [
+    "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+];
 
 type Match = {
     id: string;
@@ -25,15 +37,14 @@ export default function Dashboard() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [selectedMonth, setSelectedMonth] = useState<string>(months[new Date().getMonth()]);
 
     useEffect(() => {
         const fetchUserAndMatches = async () => {
             try {
-                // Vérifier l'utilisateur connecté
                 const { data: userData, error: userError } = await supabase.auth.getUser();
                 if (userError) throw new Error(userError.message);
 
-                // Récupérer le rôle de l'utilisateur dans la db 'user_roles' avec l'id de l'user
                 const { data: roleData, error: roleError } = await supabase
                     .from('user_roles')
                     .select('role')
@@ -47,10 +58,9 @@ export default function Dashboard() {
 
                 setIsAdmin(userRole === "admin");
 
-                // Récupérer les matchs
                 const now = new Date();
-                const firstDay = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString();
-                const lastDay = new Date(now.getFullYear(), now.getMonth() + 2, 1).toISOString();
+                const firstDay = new Date(now.getFullYear(), months.indexOf(selectedMonth), 1).toISOString();
+                const lastDay = new Date(now.getFullYear(), months.indexOf(selectedMonth) + 1, 1).toISOString();
                 const { data: matches, error: matchError } = await supabase
                     .from("match_officiel")
                     .select("*")
@@ -68,7 +78,7 @@ export default function Dashboard() {
         };
 
         fetchUserAndMatches();
-    }, []);
+    }, [selectedMonth]);
 
     if (loading) return <div>Chargement...</div>;
     if (error) return <div>Erreur : {error}</div>;
@@ -78,6 +88,21 @@ export default function Dashboard() {
             <SiteHeader title="Match officiel de l'agence" />
             <div className="flex flex-1 flex-col">
                 <div className="p-4 space-y-3">
+                    <div className="mb-4">
+                        <Select value={selectedMonth} onValueChange={(value) => setSelectedMonth(value)}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Sélectionner un mois :" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Fruits</SelectLabel>
+                                    {months.map((month, index) => (
+                                        <SelectItem key={index} value={month}>{month}</SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                    </div>
                     <AddMatchModal />
                     <Table>
                         <TableHeader>
