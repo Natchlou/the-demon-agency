@@ -23,45 +23,31 @@ export default function PlanningPage() {
     const [matchOfficiel, setMatchOfficiel] = useState<Match[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-
-    useEffect(() => {
-        const fetchMatchOfficiel = async () => {
-            const { data, error } = await supabase
-                .from('match_officiel')
-                .select('*')
-                .gt('date', new Date().toISOString())
-                .order('date', { ascending: true })
-                .limit(4);
-
-            if (error) {
-                setError(error.message);
-            } else {
-                setMatchOfficiel(data || []);
-            }
-        };
-        fetchMatchOfficiel();
-    }, [supabase]);
-
     const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         const fetchUserAndMatches = async () => {
             try {
-                // Vérifier l'utilisateur connecté
                 const { data: userData, error: userError } = await supabase.auth.getUser();
                 if (userError) throw new Error(userError.message);
 
-                // Récupérer le rôle de l'utilisateur dans la db 'user_role' avec l'id de l'user
                 const { data: roleData, error: roleError } = await supabase.from('user_roles').select('role').eq('user_id', userData.user?.id);
                 if (roleError) throw new Error(roleError.message);
 
-                // Vérifier si l'utilisateur est admin (ajuste selon ton système d'authentification)
-                setIsAdmin(roleData[0].role === "admin");
+                let userRole = roleData[0]?.role;
+
+                if (!userRole) {
+                    const { error: insertError } = await supabase.from('user_roles').insert([{ user_id: userData.user?.id, role: 'user' }]);
+                    if (insertError) throw new Error(insertError.message);
+                    userRole = 'user';
+                }
+
+                setIsAdmin(userRole === "admin");
 
                 const now = new Date();
                 const firstDay = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString();
                 const lastDay = new Date(now.getFullYear(), now.getMonth() + 2, 1).toISOString();
-                // Récupérer les matchs
+
                 const { data: matches, error: matchError } = await supabase
                     .from("match_officiel")
                     .select("*")
@@ -91,7 +77,6 @@ export default function PlanningPage() {
             <div className="flex flex-1 flex-col p-4">
                 <div className="flex flex-col gap-4">
                     {error && <p className="text-red-500">{error}</p>}
-
                     {matchOfficiel.length > 0 ? (
                         matchOfficiel.map((match) => {
                             const formattedDate = new Date(match.date).toLocaleDateString('fr-FR', {

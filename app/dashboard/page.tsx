@@ -33,18 +33,24 @@ export default function Dashboard() {
                 const { data: userData, error: userError } = await supabase.auth.getUser();
                 if (userError) throw new Error(userError.message);
 
-                // Récupérer le rôle de l'utilisateur dans la db 'user_role' avec l'id de l'user
-                const { data: roleData, error: roleError } = await supabase.from('user_roles').select('role').eq('user_id', userData.user?.id);
+                // Récupérer le rôle de l'utilisateur dans la db 'user_roles' avec l'id de l'user
+                const { data: roleData, error: roleError } = await supabase
+                    .from('user_roles')
+                    .select('role')
+                    .eq('user_id', userData.user?.id);
                 if (roleError) throw new Error(roleError.message);
 
-                // Vérifier si l'utilisateur est admin (ajuste selon ton système d'authentification)
-                setIsAdmin(roleData[0].role === "admin");
+                let userRole = roleData.length > 0 ? roleData[0].role : "user";
+                if (roleData.length === 0) {
+                    await supabase.from("user_roles").insert([{ user_id: userData.user?.id, role: "user" }]);
+                }
+
+                setIsAdmin(userRole === "admin");
 
                 // Récupérer les matchs
                 const now = new Date();
                 const firstDay = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString();
                 const lastDay = new Date(now.getFullYear(), now.getMonth() + 2, 1).toISOString();
-                // Récupérer les matchs
                 const { data: matches, error: matchError } = await supabase
                     .from("match_officiel")
                     .select("*")
