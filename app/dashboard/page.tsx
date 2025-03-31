@@ -95,7 +95,7 @@ export default function Dashboard() {
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
-                                    <SelectLabel>Fruits</SelectLabel>
+                                    <SelectLabel>Mois</SelectLabel>
                                     {months.map((month, index) => (
                                         <SelectItem key={index} value={month}>{month}</SelectItem>
                                     ))}
