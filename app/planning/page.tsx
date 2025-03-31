@@ -23,7 +23,6 @@ export default function PlanningPage() {
     const [matchOfficiel, setMatchOfficiel] = useState<Match[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const { data: session } = useSession();
 
     useEffect(() => {
         const fetchMatchOfficiel = async () => {
@@ -74,6 +73,9 @@ export default function PlanningPage() {
         fetchUserAndMatches();
     }, []);
 
+    if (loading) return <div>Chargement...</div>;
+    if (error) return <div>Erreur : {error}</div>;
+    
     return (
         <>
             <SiteHeader title="Planning des prochains mois" />
