@@ -22,6 +22,7 @@ export default function PlanningPage() {
     const supabase = createClient();
     const [matchOfficiel, setMatchOfficiel] = useState<Match[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
     const { data: session } = useSession();
 
     useEffect(() => {
@@ -41,6 +42,37 @@ export default function PlanningPage() {
         };
         fetchMatchOfficiel();
     }, [supabase]);
+
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        const fetchUserAndMatches = async () => {
+            try {
+                // Vérifier l'utilisateur connecté
+                const { data: userData, error: userError } = await supabase.auth.getUser();
+                if (userError) throw new Error(userError.message);
+
+                // Récupérer le rôle de l'utilisateur dans la db 'user_role' avec l'id de l'user
+                const { data: roleData, error: roleError } = await supabase.from('user_roles').select('role').eq('user_id', userData.user?.id);
+                if (roleError) throw new Error(roleError.message);
+
+                // Vérifier si l'utilisateur est admin (ajuste selon ton système d'authentification)
+                setIsAdmin(roleData[0].role === "admin");
+
+                // Récupérer les matchs
+                const { data: matches, error: matchError } = await supabase.from("match_officiel").select("*");
+                if (matchError) throw new Error(matchError.message);
+
+                setMatchOfficiel(matches || []);
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserAndMatches();
+    }, []);
 
     return (
         <>
@@ -67,7 +99,7 @@ export default function PlanningPage() {
                                     <CardContent>
                                         <p><strong>Nombre :</strong> {match.number} K</p>
                                         <p><strong>Boost :</strong> {match.boost ? "Oui" : "Non"}</p>
-                                        {session?.user?.role === 'admin' && (
+                                        {isAdmin && (
                                             <p><strong>Agence :</strong> {match.agency}</p>
                                         )}
                                         <p><strong>Description :</strong> {match.description}</p>
