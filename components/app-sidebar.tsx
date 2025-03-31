@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   ArrowUpCircleIcon,
@@ -8,10 +8,8 @@ import {
   LayoutDashboardIcon,
   SearchIcon,
   SettingsIcon,
-  UsersIcon
+  UsersIcon,
 } from "lucide-react";
-import * as React from "react";
-import { signIn, useSession } from "next-auth/react";
 
 import { NavDocuments } from "@/components/nav-documents";
 import { NavMain } from "@/components/nav-main";
@@ -26,19 +24,46 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+import { createClient } from "@/utils/supabase/client";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+type SupabaseUser = {
+  id: string;
+  email: string;
+  role: string;
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: session } = useSession();
+  const [utilisateur, setUtilisateur] = useState<SupabaseUser | null>(null);
+  const supabase = createClient();
 
-  const user = session?.user || null;
-  console.log("📌 Session reçue :", session);
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (!error && data.user) {
+        // Récupérer le rôle de l'utilisateur dans la db 'user_role' avec l'id de l'user
+        const { data: roleData, error: roleError } = await supabase.from('user_roles').select('role').eq('user_id', data.user.id);
+        if (roleError) throw new Error(roleError.message);
+
+        setUtilisateur({
+          id: data.user.id,
+          email: data.user.email as string,
+          role: roleData[0].role,
+        });
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   const data = {
-    user: user
+    user: utilisateur
       ? {
-        name: user.name,
-        email: user.email,
-        avatar: user.image || "/default-avatar.png",
+        name: utilisateur.email,
+        email: utilisateur.email,
+        avatar: "/default-avatar.png",
+        role: utilisateur.role,
       }
       : null,
     navMain: [
@@ -51,9 +76,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       { title: "Obtenir de l'aide", url: "#", icon: HelpCircleIcon },
       { title: "Rechercher", url: "#", icon: SearchIcon },
     ],
-    documents: [
-      { name: "Planning", url: "/planning", icon: ClipboardListIcon },
-    ],
+    documents: [{ name: "Planning", url: "/planning", icon: ClipboardListIcon }],
   };
 
   return (
@@ -61,14 +84,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
-              <a href="#">
+            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
+              <Link href="/">
                 <ArrowUpCircleIcon className="h-5 w-5" />
                 <span className="text-base font-semibold">The Demon Agency</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -80,13 +100,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         {data.user ? (
-          <NavUser user={{
-            name: data.user.name || '',
-            email: data.user.email || '',
-            avatar: data.user.avatar
-          }} />
+          <NavUser
+            user={{
+              name: data.user.name,
+              email: data.user.email,
+              avatar: data.user.avatar,
+              role: data.user.role,
+            }}
+          />
         ) : (
-          <Button onClick={() => signIn('email', { callbackUrl: "/dashboard" })} className="w-full">Se connecter</Button>
+          <Link href="/login" className="w-full text-center block py-2 text-blue-500 hover:text-blue-700">
+            Se connecter
+          </Link>
         )}
       </SidebarFooter>
     </Sidebar>

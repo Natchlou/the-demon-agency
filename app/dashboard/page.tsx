@@ -33,8 +33,12 @@ export default function Dashboard() {
                 const { data: userData, error: userError } = await supabase.auth.getUser();
                 if (userError) throw new Error(userError.message);
 
+                // Récupérer le rôle de l'utilisateur dans la db 'user_role' avec l'id de l'user
+                const { data: roleData, error: roleError } = await supabase.from('user_roles').select('role').eq('user_id', userData.user?.id);
+                if (roleError) throw new Error(roleError.message);
+
                 // Vérifier si l'utilisateur est admin (ajuste selon ton système d'authentification)
-                setIsAdmin(userData.user?.role === "admin");
+                setIsAdmin(roleData[0].role === "admin");
 
                 // Récupérer les matchs
                 const { data: matches, error: matchError } = await supabase.from("match_officiel").select("*");
