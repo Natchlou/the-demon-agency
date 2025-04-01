@@ -103,7 +103,7 @@ export default function Dashboard() {
                             </SelectContent>
                         </Select>
                     </div>
-                    <AddMatchModal />
+                    {isAdmin && <AddMatchModal />}
                     <Table>
                         <TableHeader>
                             <TableRow>
