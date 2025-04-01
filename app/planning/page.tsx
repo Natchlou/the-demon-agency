@@ -4,7 +4,6 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
-
 import {
     Select,
     SelectContent,
@@ -14,6 +13,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Loader2 } from 'lucide-react';
 
 const months = [
     "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
@@ -41,6 +41,7 @@ export default function PlanningPage() {
 
     useEffect(() => {
         const fetchUserAndMatches = async () => {
+            setLoading(true);
             try {
                 const { data: userData, error: userError } = await supabase.auth.getUser();
                 if (userError) throw new Error(userError.message);
@@ -82,9 +83,6 @@ export default function PlanningPage() {
         fetchUserAndMatches();
     }, [selectedMonth]);
 
-    if (loading) return <div>Chargement...</div>;
-    if (error) return <div>Erreur : {error}</div>;
-
     return (
         <>
             <SiteHeader title="Planning des prochains mois" />
@@ -105,38 +103,45 @@ export default function PlanningPage() {
                     </Select>
                 </div>
 
-                <div className="flex flex-col gap-4">
-                    {error && <p className="text-red-500">{error}</p>}
-                    {matchOfficiel.length > 0 ? (
-                        matchOfficiel.map((match) => {
-                            const formattedDate = new Date(match.date).toLocaleDateString('fr-FR', {
-                                day: '2-digit',
-                                month: 'long',
-                                year: 'numeric'
-                            });
-                            const formattedTime = match.heure.slice(0, 2) + "h" + match.heure.slice(3, 5);
+                {loading ? (
+                    <div className="flex justify-center items-center py-10">
+                        <Loader2 className="w-6 h-6 animate-spin" />
+                        <span className="ml-2">Chargement...</span>
+                    </div>
+                ) : (
+                    <div className="flex flex-col gap-4">
+                        {error && <p className="text-red-500">Erreur : {error}</p>}
+                        {matchOfficiel.length > 0 ? (
+                            matchOfficiel.map((match) => {
+                                const formattedDate = new Date(match.date).toLocaleDateString('fr-FR', {
+                                    day: '2-digit',
+                                    month: 'long',
+                                    year: 'numeric'
+                                });
+                                const formattedTime = match.heure.slice(0, 2) + "h" + match.heure.slice(3, 5);
 
-                            return (
-                                <Card key={match.id} className="shadow-lg p-4">
-                                    <CardHeader className="font-bold flex items-center gap-2">
-                                        <Badge>{formattedDate} à {formattedTime}</Badge>
-                                        <span>{match.creator} vs {match.opponent}</span>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p><strong>Nombre :</strong> {match.number} K</p>
-                                        <p><strong>Boost :</strong> {match.boost ? "Oui" : "Non"}</p>
-                                        {isAdmin && (
-                                            <p><strong>Agence :</strong> {match.agency}</p>
-                                        )}
-                                        <p><strong>Description :</strong> {match.description}</p>
-                                    </CardContent>
-                                </Card>
-                            );
-                        })
-                    ) : (
-                        <p className="text-center text-gray-500">Aucun match officiel trouvé.</p>
-                    )}
-                </div>
+                                return (
+                                    <Card key={match.id} className="shadow-lg p-4">
+                                        <CardHeader className="font-bold flex items-center gap-2">
+                                            <Badge>{formattedDate} à {formattedTime}</Badge>
+                                            <span>{match.creator} vs {match.opponent}</span>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <p><strong>Nombre :</strong> {match.number} K</p>
+                                            <p><strong>Boost :</strong> {match.boost ? "Oui" : "Non"}</p>
+                                            {isAdmin && (
+                                                <p><strong>Agence :</strong> {match.agency}</p>
+                                            )}
+                                            <p><strong>Description :</strong> {match.description}</p>
+                                        </CardContent>
+                                    </Card>
+                                );
+                            })
+                        ) : (
+                            <p className="text-center text-gray-500">Aucun match officiel trouvé.</p>
+                        )}
+                    </div>
+                )}
             </div>
         </>
     );

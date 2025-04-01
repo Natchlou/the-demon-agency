@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { createClient } from "@/utils/supabase/client";
+import { Loader2 } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -14,7 +15,8 @@ import {
     SelectLabel,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+
 const months = [
     "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
 ];
@@ -41,6 +43,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         const fetchUserAndMatches = async () => {
+            setLoading(true);
             try {
                 const { data: userData, error: userError } = await supabase.auth.getUser();
                 if (userError) throw new Error(userError.message);
@@ -55,12 +58,12 @@ export default function Dashboard() {
                 if (roleData.length === 0) {
                     await supabase.from("user_roles").insert([{ user_id: userData.user?.id, role: "user" }]);
                 }
-
                 setIsAdmin(userRole === "admin");
 
                 const now = new Date();
                 const firstDay = new Date(now.getFullYear(), months.indexOf(selectedMonth), 1).toISOString();
                 const lastDay = new Date(now.getFullYear(), months.indexOf(selectedMonth) + 1, 1).toISOString();
+
                 const { data: matches, error: matchError } = await supabase
                     .from("match_officiel")
                     .select("*")
@@ -79,9 +82,6 @@ export default function Dashboard() {
 
         fetchUserAndMatches();
     }, [selectedMonth]);
-
-    if (loading) return <div>Chargement...</div>;
-    if (error) return <div>Erreur : {error}</div>;
 
     return (
         <>
@@ -104,42 +104,53 @@ export default function Dashboard() {
                         </Select>
                     </div>
                     {isAdmin && <AddMatchModal />}
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Créateur</TableHead>
-                                <TableHead>Adversaire</TableHead>
-                                <TableHead>Date</TableHead>
-                                <TableHead>Heure</TableHead>
-                                <TableHead>Boost</TableHead>
-                                <TableHead>Nombre</TableHead>
-                                {isAdmin && <TableHead>Agence</TableHead>}
-                                <TableHead>Description</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {matchOfficiel.map((match) => (
-                                <TableRow key={match.id}>
-                                    <TableCell className="font-medium">{match.creator}</TableCell>
-                                    <TableCell>{match.opponent}</TableCell>
-                                    <TableCell>
-                                        {new Date(match.date).toLocaleDateString("fr-FR", {
-                                            day: "2-digit",
-                                            month: "long",
-                                            year: "numeric",
-                                        })}
-                                    </TableCell>
-                                    <TableCell>{match.heure}</TableCell>
-                                    <TableCell>
-                                        <Badge>{match.boost ? "Oui" : "Non"}</Badge>
-                                    </TableCell>
-                                    <TableCell>{match.number} K</TableCell>
-                                    {isAdmin && <TableCell>{match.agency}</TableCell>}
-                                    <TableCell>{match.description}</TableCell>
+                    {loading ? (
+                        <div className="flex justify-center items-center py-10">
+                            <Loader2 className="w-6 h-6 animate-spin" />
+                            <span className="ml-2">Chargement...</span>
+                        </div>
+                    ) : error ? (
+                        <div className="text-red-500">Erreur : {error}</div>
+                    ) : matchOfficiel.length === 0 ? (
+                        <div className="text-center text-gray-500 py-10">Aucun match trouvé pour ce mois.</div>
+                    ) : (
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Créateur</TableHead>
+                                    <TableHead>Adversaire</TableHead>
+                                    <TableHead>Date</TableHead>
+                                    <TableHead>Heure</TableHead>
+                                    <TableHead>Boost</TableHead>
+                                    <TableHead>Nombre</TableHead>
+                                    {isAdmin && <TableHead>Agence</TableHead>}
+                                    <TableHead>Description</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {matchOfficiel.map((match) => (
+                                    <TableRow key={match.id}>
+                                        <TableCell className="font-medium">{match.creator}</TableCell>
+                                        <TableCell>{match.opponent}</TableCell>
+                                        <TableCell>
+                                            {new Date(match.date).toLocaleDateString("fr-FR", {
+                                                day: "2-digit",
+                                                month: "long",
+                                                year: "numeric",
+                                            })}
+                                        </TableCell>
+                                        <TableCell>{match.heure}</TableCell>
+                                        <TableCell>
+                                            <Badge>{match.boost ? "Oui" : "Non"}</Badge>
+                                        </TableCell>
+                                        <TableCell>{match.number} K</TableCell>
+                                        {isAdmin && <TableCell>{match.agency}</TableCell>}
+                                        <TableCell>{match.description}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    )}
                 </div>
             </div>
         </>

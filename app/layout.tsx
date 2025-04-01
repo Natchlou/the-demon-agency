@@ -3,6 +3,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default function RootLayout({
             <AppSidebar variant="inset" />
             <SidebarInset>
               {children}
+              <Toaster />
             </SidebarInset>
           </SidebarProvider>
         </ThemeProvider>
