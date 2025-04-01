@@ -16,6 +16,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { DataTableDemo } from "@/components/list-match";
 
 const months = [
     "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
@@ -103,7 +104,6 @@ export default function Dashboard() {
                             </SelectContent>
                         </Select>
                     </div>
-                    {isAdmin && <AddMatchModal />}
                     {loading ? (
                         <div className="flex justify-center items-center py-10">
                             <Loader2 className="w-6 h-6 animate-spin" />
@@ -114,43 +114,9 @@ export default function Dashboard() {
                     ) : matchOfficiel.length === 0 ? (
                         <div className="text-center text-gray-500 py-10">Aucun match trouvé pour ce mois.</div>
                     ) : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Créateur</TableHead>
-                                    <TableHead>Adversaire</TableHead>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead>Heure</TableHead>
-                                    <TableHead>Boost</TableHead>
-                                    <TableHead>Nombre</TableHead>
-                                    {isAdmin && <TableHead>Agence</TableHead>}
-                                    <TableHead>Description</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {matchOfficiel.map((match) => (
-                                    <TableRow key={match.id}>
-                                        <TableCell className="font-medium">{match.creator}</TableCell>
-                                        <TableCell>{match.opponent}</TableCell>
-                                        <TableCell>
-                                            {new Date(match.date).toLocaleDateString("fr-FR", {
-                                                day: "2-digit",
-                                                month: "long",
-                                                year: "numeric",
-                                            })}
-                                        </TableCell>
-                                        <TableCell>{match.heure}</TableCell>
-                                        <TableCell>
-                                            <Badge>{match.boost ? "Oui" : "Non"}</Badge>
-                                        </TableCell>
-                                        <TableCell>{match.number} K</TableCell>
-                                        {isAdmin && <TableCell>{match.agency}</TableCell>}
-                                        <TableCell>{match.description}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                        <DataTableDemo data={matchOfficiel} isAdmin={isAdmin} />
                     )}
+
                 </div>
             </div>
         </>

@@ -29,7 +29,7 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
-import { signOut } from "next-auth/react"
+import { createClient } from "@supabase/supabase-js";
 
 export function NavUser({
     user,
@@ -43,6 +43,10 @@ export function NavUser({
 }) {
     const { isMobile } = useSidebar()
 
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
     return (
         <SidebarMenu>
             <SidebarMenuItem>
@@ -117,7 +121,7 @@ export function NavUser({
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => signOut()}>
+                        <DropdownMenuItem onClick={async () => await supabase.auth.signOut()}>
                             <LogOutIcon className="mr-2" />
                             Log out
                         </DropdownMenuItem>
