@@ -73,11 +73,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       { title: "Horaire", url: "/agence", icon: ClockIcon },
     ],
     navSecondary: [
-      { title: "Paramètres", url: "#", icon: SettingsIcon },
-      { title: "Obtenir de l'aide", url: "#", icon: HelpCircleIcon },
-      { title: "Rechercher", url: "#", icon: SearchIcon },
+      { title: "Obtenir de l'aide", url: "/aide", icon: HelpCircleIcon },
     ],
-    documents: [{ name: "Planning", url: "/planning", icon: ClipboardListIcon }],
+    documents: [
+      { name: "Planning", url: "/planning", icon: ClipboardListIcon }
+    ],
   };
 
   return (

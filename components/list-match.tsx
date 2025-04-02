@@ -105,7 +105,7 @@ export const columns: CustomColumnDef<Match>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("date")}</div>,
+        cell: ({ row }) => <div className="lowercase">{new Date(row.getValue("date")).toLocaleDateString()}</div>,
     },
     {
         accessorKey: "heure",

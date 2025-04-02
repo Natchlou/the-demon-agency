@@ -1,12 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import AddMatchModal from "@/components/add-match";
+import { DataTableDemo } from "@/components/list-match";
 import { SiteHeader } from "@/components/site-header";
-import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { createClient } from "@/utils/supabase/client";
-import { Loader2 } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -16,7 +11,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { DataTableDemo } from "@/components/list-match";
+import { createClient } from "@/utils/supabase/client";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const months = [
     "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"

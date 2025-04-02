@@ -102,18 +102,6 @@ export function NavUser({
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                             <DropdownMenuItem asChild>
-                                <Link href="/account">
-                                    <UserCircleIcon className="mr-2" />
-                                    Account
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href="/billing">
-                                    <CreditCardIcon className="mr-2" />
-                                    Billing
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
                                 <Link href="/notifications">
                                     <BellIcon className="mr-2" />
                                     Notifications
