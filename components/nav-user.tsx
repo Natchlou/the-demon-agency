@@ -44,8 +44,8 @@ export function NavUser({
     const { isMobile } = useSidebar()
 
     const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
     return (
         <SidebarMenu>
@@ -109,7 +109,13 @@ export function NavUser({
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={async () => await supabase.auth.signOut()}>
+                        <DropdownMenuItem onClick={async () => {
+                            await fetch("/logout", {
+                                method: "POST",
+                            });
+
+                            window.location.href = "/login";
+                        }}>
                             <LogOutIcon className="mr-2" />
                             Log out
                         </DropdownMenuItem>

@@ -39,13 +39,11 @@ export default function NotificationsPage() {
         <>
             <SiteHeader title='Notifications' />
             <div className='p-4'>
-                <h1 className='text-4xl text-left text-blue-500'>Notifications</h1>
-                <Separator className='my-2' />
                 <div className='flex flex-col gap-2'>
                     {notifications.length > 0 ? (
                         notifications.map((notif) => (
                             <Alert key={notif.created_at}>
-                                <Info className="h-4 w-4 text-blue-500" />
+                                <Info className="h-4 w-4" />
                                 <AlertTitle>{notif.title}</AlertTitle>
                                 <AlertDescription className="prose">
                                     <ReactMarkdown>{notif.description}</ReactMarkdown>
