@@ -142,6 +142,13 @@ export const columns: CustomColumnDef<Match>[] = [
         cell: ({ row }) => (
             <div className="capitalize">{row.getValue("description")}</div>
         ),
+    },
+    {
+        accessorKey: "state",
+        header: "Status du match",
+        cell: ({ row }) => (
+            <span className={`text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm ${row.getValue("state") === 'Annulé' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' : row.getValue("state") === 'Confirmé' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : ''} capitalize`}>{row.getValue("state")}</span>
+        ),
     }
 ]
 
@@ -186,6 +193,7 @@ export function DataTableDemo({ data, isAdmin }: { data: Match[], isAdmin: boole
                         table.getColumn("creator")?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
+                    type="input"
                 />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

@@ -29,6 +29,7 @@ type Match = {
     number: string;
     agency: string;
     description: string;
+    state: string;
 };
 
 export default function PlanningPage() {
@@ -125,6 +126,7 @@ export default function PlanningPage() {
                                         <CardHeader className="font-bold flex items-center gap-2">
                                             <Badge>{formattedDate} à {formattedTime}</Badge>
                                             <span>{match.creator} vs {match.opponent}</span>
+                                            <span className={`text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm ${match.state === 'Annulé' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' : match.state === 'Confirmé' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : ''} capitalize`}>{match.state}</span>
                                         </CardHeader>
                                         <CardContent>
                                             <p><strong>Nombre :</strong> {match.number} K</p>
