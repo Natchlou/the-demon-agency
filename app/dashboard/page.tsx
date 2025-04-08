@@ -11,7 +11,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { createClient } from "@/utils/supabase/client";
+import { Match } from "@/lib/type";
+import { supabase } from "@/utils/supabase/client"; // Correction de l'importation de supabase
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -19,20 +20,7 @@ const months = [
     "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
 ];
 
-type Match = {
-    id: string;
-    creator: string;
-    opponent: string;
-    date: string;
-    heure: string;
-    boost: boolean;
-    number: string;
-    agency: string;
-    description: string;
-};
-
 export default function Dashboard() {
-    const supabase = createClient();
     const [matchOfficiel, setMatchOfficiel] = useState<Match[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);

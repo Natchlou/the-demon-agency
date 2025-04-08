@@ -2,7 +2,7 @@
 import { SiteHeader } from '@/components/site-header';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
-import { createClient } from '@/utils/supabase/client';
+import { supabase } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import {
     Select,
@@ -33,7 +33,6 @@ type Match = {
 };
 
 export default function PlanningPage() {
-    const supabase = createClient();
     const [matchOfficiel, setMatchOfficiel] = useState<Match[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -62,13 +61,12 @@ export default function PlanningPage() {
 
                 const now = new Date();
                 const firstDay = new Date(now.getFullYear(), months.indexOf(selectedMonth), 1).toISOString();
-                const lastDay = new Date(now.getFullYear(), months.indexOf(selectedMonth) + 1, 1).toISOString();
+                const today = new Date().toISOString();
 
                 const { data: matches, error: matchError } = await supabase
                     .from("match_officiel")
                     .select("*")
-                    .gte("date", firstDay)
-                    .lt("date", lastDay)
+                    .gte("date", today)
                     .order("date", { ascending: true })
                     .limit(4);
                 if (matchError) throw new Error(matchError.message);

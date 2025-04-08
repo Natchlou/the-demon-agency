@@ -1,14 +1,11 @@
 "use client";
 
 import {
-  ArrowUpCircleIcon,
   ClipboardListIcon,
   ClockIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
-  SearchIcon,
-  SettingsIcon,
-  UsersIcon,
+  UsersIcon
 } from "lucide-react";
 
 import { NavDocuments } from "@/components/nav-documents";
@@ -24,10 +21,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { createClient } from "@/utils/supabase/client";
+import { supabase } from "@/utils/supabase/client";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 type SupabaseUser = {
   id: string;
@@ -37,7 +34,6 @@ type SupabaseUser = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [utilisateur, setUtilisateur] = useState<SupabaseUser | null>(null);
-  const supabase = createClient();
 
   useEffect(() => {
     const fetchUser = async () => {

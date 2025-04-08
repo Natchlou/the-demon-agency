@@ -29,7 +29,7 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/utils/supabase/client";
 
 export function NavUser({
     user,
@@ -43,10 +43,6 @@ export function NavUser({
 }) {
     const { isMobile } = useSidebar()
 
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
     return (
         <SidebarMenu>
             <SidebarMenuItem>

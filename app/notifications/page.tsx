@@ -1,8 +1,7 @@
 "use client"
 import { SiteHeader } from '@/components/site-header'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Separator } from '@/components/ui/separator'
-import { createClient } from "@/utils/supabase/client"
+import { supabase } from "@/utils/supabase/client"
 import { Info } from "lucide-react"
 import { useEffect, useState } from 'react'
 import ReactMarkdown from "react-markdown";
@@ -18,7 +17,6 @@ export default function NotificationsPage() {
 
     useEffect(() => {
         const fetchNotifications = async () => {
-            const supabase = createClient();
             const { data, error } = await supabase
                 .from("notifications")
                 .select("*")

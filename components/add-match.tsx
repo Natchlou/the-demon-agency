@@ -1,188 +1,140 @@
 'use client'
 
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Button } from '@/components/ui/button';
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { createClient } from "@/utils/supabase/client"; // On suppose que le client est exporté de cette manière
-import { PostgrestError } from '@supabase/supabase-js';
-import { Textarea } from '@/components/ui/textarea';
-import { toast } from 'sonner';
+import React, { useState } from 'react'
+import {
+    Dialog, DialogContent, DialogDescription,
+    DialogHeader, DialogTitle, DialogTrigger
+} from "@/components/ui/dialog"
+import { Button } from '@/components/ui/button'
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Textarea } from '@/components/ui/textarea'
+import { toast } from 'sonner'
+import { supabase } from "@/utils/supabase/client"
+import { z } from 'zod'
+
+const matchSchema = z.object({
+    creator: z.string().min(1, "Créateur requis"),
+    opponent: z.string().min(1, "Adversaire requis"),
+    date: z.string().min(1, "Date requise"),
+    heure: z.string().min(1, "Heure requise"),
+    number: z.string().optional(),
+    agency: z.string().optional(),
+    description: z.string().optional(),
+    boost: z.boolean(),
+})
+
+type MatchForm = z.infer<typeof matchSchema>
+
+const fields = [
+    { id: "creator", label: "Créateur", type: "text" },
+    { id: "opponent", label: "Adversaire", type: "text" },
+    { id: "date", label: "Date", type: "date" },
+    { id: "heure", label: "Heure", type: "time" },
+    { id: "number", label: "Nombre de K", type: "text" },
+    { id: "agency", label: "Agence", type: "text" }
+]
 
 export default function AddMatchModal() {
-    const supabase = createClient();
-    const [formState, setFormState] = useState({
-        creator: '',
-        opponent: '',
-        date: '',
-        heure: '',
-        boost: false,
-        number: '',
-        agency: '',
-        description: ''
-    });
-    const [loading, setLoading] = useState(false);
+    const [form, setForm] = useState<MatchForm>({
+        creator: '', opponent: '', date: '', heure: '',
+        number: '', agency: '', description: '', boost: false
+    })
+    const [errors, setErrors] = useState<Partial<Record<keyof MatchForm, string>>>({})
+    const [loading, setLoading] = useState(false)
     const [open, setOpen] = useState(false)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormState({
-            ...formState,
-            [e.target.id]: e.target.value
-        });
-    };
-
-    const handleBoostChange = (checked: boolean) => {
-        setFormState({
-            ...formState,
-            boost: checked
-        });
-    };
+        setForm({ ...form, [e.target.id]: e.target.value })
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
+        e.preventDefault()
+        setErrors({})
+        const parsed = matchSchema.safeParse(form)
 
-        try {
-            const { error }: { error: PostgrestError | null } = await supabase
-                .from('match_officiel')
-                .insert([{
-                    creator: formState.creator,
-                    opponent: formState.opponent,
-                    date: formState.date,
-                    heure: formState.heure,
-                    boost: formState.boost,
-                    number: formState.number,
-                    agency: formState.agency,
-                    description: formState.description
-                }]);
-
-            if (error) throw error;
-
-
-            toast('Match officiel crée avec succès')
-            setOpen(false)
-        } catch (error: PostgrestError | unknown) {
-            if (error instanceof PostgrestError) {
-                console.error(error.message);
-                alert(error.message || 'Erreur lors de l\'ajout du match.');
-            } else {
-                console.error(error);
-                alert('Erreur inconnue lors de l\'ajout du match.');
-            }
-        } finally {
-            setLoading(false);
+        if (!parsed.success) {
+            const fieldErrors: Partial<Record<keyof MatchForm, string>> = {}
+            parsed.error.errors.forEach(err => {
+                const field = err.path[0] as keyof MatchForm
+                fieldErrors[field] = err.message
+            })
+            setErrors(fieldErrors)
+            toast.error("Merci de corriger les champs.")
+            return
         }
-    };
+
+        setLoading(true)
+        try {
+            const { error } = await supabase.from('match_officiel').insert([parsed.data])
+            if (error) throw error
+            toast.success("Match officiel créé avec succès")
+            setOpen(false)
+        } catch (err) {
+            toast.error("Erreur lors de la création du match")
+            console.error(err)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
-        <Dialog open={open}>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button onClick={() => setOpen(true)}>Ajouter un match officiel</Button>
+                <Button>Ajouter un match officiel</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Ajouter un Match Officiel</DialogTitle>
-                    <DialogDescription>
-                        Veuillez entrer les informations du match à ajouter.
-                    </DialogDescription>
+                    <DialogDescription>Remplis les infos ci-dessous.</DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit} className="grid gap-2 p-2">
-                    <div className='grid grid-cols-4 items-center gap-4'>
-                        <Label htmlFor="creator" className='text-right'>Créateur</Label>
-                        <Input
-                            type="text"
-                            id="creator"
-                            value={formState.creator}
-                            onChange={handleChange}
-                            required
-                            className='col-span-3'
-                        />
-                    </div>
-                    <div className='grid grid-cols-4 items-center gap-4'>
-                        <Label htmlFor="opponent" className='text-right'>Adversaire</Label>
-                        <Input
-                            type="text"
-                            id="opponent"
-                            value={formState.opponent}
-                            onChange={handleChange}
-                            required
-                            className='col-span-3'
-                        />
-                    </div>
-                    <div className='grid grid-cols-4 items-center gap-4'>
-                        <Label htmlFor="date" className='text-right'>Date</Label>
-                        <Input
-                            type="date"
-                            id="date"
-                            value={formState.date}
-                            onChange={handleChange}
-                            required
-                            className='col-span-3'
-                        />
-                    </div>
-                    <div className='grid grid-cols-4 items-center gap-4'>
-                        <Label htmlFor="heure" className='text-right'>Heure</Label>
-                        <Input
-                            type="time"
-                            id="heure"
-                            value={formState.heure}
-                            onChange={handleChange}
-                            required
-                            className='col-span-3'
-                        />
-                    </div>
-                    <div className='grid grid-cols-4 items-center gap-4'>
-                        <Label htmlFor="boost" className='text-right'>Boost</Label>
+                <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
+                    {fields.map(({ id, label, type }) => (
+                        <div key={id} className="space-y-1">
+                            <Label htmlFor={id}>{label}</Label>
+                            <Input
+                                id={id}
+                                type={type}
+                                value={form[id as keyof MatchForm] as string}
+                                onChange={handleChange}
+                                autoComplete="off"
+                            />
+                            {errors[id as keyof MatchForm] && (
+                                <p className="text-sm text-red-500">{errors[id as keyof MatchForm]}</p>
+                            )}
+                        </div>
+                    ))}
+
+                    <div className="flex items-center space-x-2">
                         <Checkbox
                             id="boost"
-                            checked={formState.boost}
-                            onCheckedChange={handleBoostChange}
-                            className="h-4 w-4 text-blue-500 col-span-3"
+                            checked={form.boost}
+                            onCheckedChange={(checked) => setForm({ ...form, boost: !!checked })}
                         />
+                        <Label htmlFor="boost">Boost</Label>
                     </div>
-                    <div className='grid grid-cols-4 items-center gap-4'>
-                        <Label htmlFor="number" className='text-right'>Nombre de K</Label>
-                        <Input
-                            type="text"
-                            id="number"
-                            value={formState.number}
-                            onChange={handleChange}
-                            className='col-span-3'
-                        />
-                    </div>
-                    <div className='grid grid-cols-4 items-center gap-4'>
-                        <Label htmlFor="agency" className='text-right'>Agence</Label>
-                        <Input
-                            type="text"
-                            id="agency"
-                            value={formState.agency}
-                            onChange={handleChange}
-                            className='col-span-3'
-                        />
-                    </div>
-                    <div className='grid grid-cols-4 items-center gap-4'>
-                        <Label htmlFor="description" className='text-right'>Description</Label>
+
+                    <div className="space-y-1">
+                        <Label htmlFor="description">Description</Label>
                         <Textarea
                             id="description"
-                            value={formState.description}
+                            rows={3}
+                            value={form.description}
                             onChange={handleChange}
-                            className="col-span-3 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            rows={4}
+                            autoComplete="off"
                         />
                     </div>
-                    <div className='flex flex-row gap-2 justify-end align-middle'>
-                        <Button onClick={() => setOpen(false)} variant={'destructive'}>
-                            Annuler
-                        </Button>
+
+                    <div className="flex justify-end space-x-2 pt-2">
+                        <Button type="button" variant="destructive" onClick={() => setOpen(false)}>Annuler</Button>
                         <Button type="submit" disabled={loading}>
-                            {loading ? 'Enregistrement...' : 'Ajouter le match'}
+                            {loading ? "Enregistrement..." : "Ajouter le match"}
                         </Button>
                     </div>
                 </form>
             </DialogContent>
         </Dialog>
-    );
+    )
 }
