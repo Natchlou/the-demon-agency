@@ -1,26 +1,16 @@
 "use client"
 
 import {
-    FolderIcon,
-    MoreHorizontalIcon,
-    ShareIcon,
-    type LucideIcon,
+    type LucideIcon
 } from "lucide-react"
 
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
     SidebarGroup,
     SidebarGroupLabel,
     SidebarMenu,
-    SidebarMenuAction,
     SidebarMenuButton,
     SidebarMenuItem,
-    useSidebar,
+    useSidebar
 } from "@/components/ui/sidebar"
 
 export function NavDocuments({

@@ -36,18 +36,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import AddMatchModal from "./add-match"
-
-type Match = {
-    id: string;
-    creator: string;
-    opponent: string;
-    date: string;
-    heure: string;
-    boost: boolean;
-    number: string;
-    agency: string;
-    description: string;
-};
+import { Match } from "@/lib/type"
 
 type CustomColumnDef<T> = ColumnDef<T> & {
     meta?: {

@@ -9,17 +9,13 @@ export default function EquipePage() {
         "Chris (The Demon Psycho Familly)"
     ];
     const managers = [
-        "Chouchoune",
-        "Olivier(oliver)",
         "Baloo",
-        "Nico",
         "TaZzZdubai",
         "Thomas"
     ]
     const agents = [
         "Fafa",
         "agent hydra hikaru",
-        "Fabou"
     ]
     return (
         <>

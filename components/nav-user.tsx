@@ -2,10 +2,8 @@
 
 import {
     BellIcon,
-    CreditCardIcon,
     LogOutIcon,
-    MoreVerticalIcon,
-    UserCircleIcon,
+    MoreVerticalIcon
 } from "lucide-react"
 
 import {
@@ -29,7 +27,6 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
-import { supabase } from "@/utils/supabase/client";
 
 export function NavUser({
     user,
